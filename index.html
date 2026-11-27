@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asesmen Matematika SMA</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2350;--card:#fff;--pink:#ff5fa2;--yellow:#ffc933;--teal:#19c3b1;--blue:#4f7cff;--purple:#8a5cf6;--ok:#16a34a;--bad:#e11d48}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:'Fredoka',system-ui,sans-serif;color:var(--ink);background:linear-gradient(135deg,#ffd6e8,#d9e6ff 45%,#c9f5ee);background-attachment:fixed;padding:16px}
+.wrap{max-width:760px;margin:0 auto}
+.card{background:var(--card);border-radius:24px;padding:24px;box-shadow:0 10px 0 rgba(79,124,255,.18),0 18px 40px rgba(138,92,246,.15);margin-bottom:16px}
+h1{margin:0 0 4px;font-size:2rem;background:linear-gradient(90deg,var(--pink),var(--purple),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{margin:0 0 12px}
+.sub{margin:0 0 16px;color:#6b63a0}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input,select{width:100%;padding:12px 14px;border:3px solid #e4defc;border-radius:14px;font:inherit;color:var(--ink)}
+input:focus,select:focus{outline:none;border-color:var(--purple)}
+.rules{background:#fff7dc;border:3px dashed var(--yellow);border-radius:18px;padding:14px 18px;margin:12px 0}
+.rules ol{margin:6px 0 0;padding-left:20px;line-height:1.6}
+button{font:inherit;font-weight:600;border:0;border-radius:16px;padding:13px 22px;cursor:pointer;color:#fff;background:linear-gradient(90deg,var(--pink),var(--purple));box-shadow:0 5px 0 rgba(43,35,80,.25);transition:transform .1s}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(43,35,80,.25)}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button.alt{background:linear-gradient(90deg,var(--teal),var(--blue))}
+.full{width:100%;margin-top:16px}
+.hidden{display:none}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.badge{background:var(--purple);color:#fff;border-radius:999px;padding:6px 14px;font-weight:600;white-space:nowrap}
+.timer{margin-left:auto;background:var(--yellow);border-radius:999px;padding:6px 16px;font-weight:700;font-size:1.1rem}
+.timer.low{background:var(--bad);color:#fff}
+.bar{height:12px;background:#ece8ff;border-radius:99px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--blue),var(--purple));transition:width .3s}
+.tbar i{background:linear-gradient(90deg,var(--yellow),var(--pink));transition:width 1s linear}
+.q{font-size:1.3rem;font-weight:600;margin:16px 0}
+.opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin:10px 0;padding:14px;color:var(--ink);background:#f6f3ff;border:3px solid #e4defc;box-shadow:none;border-radius:16px}
+.opt b{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:50%;color:#fff}
+.opt:nth-child(1) b{background:var(--pink)}.opt:nth-child(2) b{background:var(--blue)}.opt:nth-child(3) b{background:var(--teal)}.opt:nth-child(4) b{background:var(--purple)}
+.opt:hover:not(:disabled){border-color:var(--purple)}
+.opt.right{background:#dcfce7;border-color:var(--ok)}
+.opt.wrong{background:#ffe4ea;border-color:var(--bad)}
+.exp{border-radius:16px;padding:14px 16px;margin-top:12px;line-height:1.5}
+.exp.ok{background:#dcfce7}.exp.no{background:#ffe4ea}.exp.to{background:#fff1cc}
+.score{font-size:4rem;font-weight:700;text-align:center;margin:0;background:linear-gradient(90deg,var(--pink),var(--yellow),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats{display:flex;gap:10px;margin:12px 0}
+.stats div{flex:1;text-align:center;border-radius:16px;padding:12px;color:#fff;font-weight:600}
+.rv{border-left:8px solid;border-radius:12px;padding:10px 14px;margin:10px 0;background:#faf9ff;line-height:1.5}
+.rv.ok{border-color:var(--ok)}.rv.no{border-color:var(--bad)}
+#status{margin-top:10px;font-weight:600}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HALAMAN IDENTITAS -->
+<section id="intro" class="card">
+  <h1>🧮 Asesmen Matematika</h1>
+  <p class="sub">Kelas X – XII SMA · 30 soal pilihan ganda</p>
+  <label for="nama">Nama lengkap</label><input id="nama" placeholder="Contoh: Budi Santoso" autocomplete="name">
+  <label for="nis">NIS / No. absen</label><input id="nis" placeholder="Contoh: 12345">
+  <label for="kelas">Kelas</label>
+  <select id="kelas"><option value="">-- pilih kelas --</option><option>X</option><option>XI</option><option>XII</option></select>
+  <div class="rules"><b>📋 Petunjuk pengerjaan</b>
+    <ol>
+      <li>Isi nama, NIS, dan kelas dengan benar.</li>
+      <li>Ada <b id="tShow">60</b> detik untuk setiap soal. Waktu habis = soal otomatis dianggap salah dan lanjut.</li>
+      <li>Pilih satu jawaban. Setelah memilih, jawaban tidak bisa diubah.</li>
+      <li>Setelah menjawab, penjelasan muncul. Tekan "Lanjut" untuk soal berikutnya.</li>
+      <li>Di akhir, hasil dikirim otomatis ke email guru.</li>
+      <li>Dilarang membuka tab lain atau bekerja sama. Selamat mengerjakan! 🍀</li>
+    </ol>
+  </div>
+  <button class="full" id="mulai">Mulai Asesmen 🚀</button>
+  <p id="err" style="color:var(--bad);font-weight:600"></p>
+</section>
+
+<!-- HALAMAN SOAL -->
+<section id="quiz" class="card hidden">
+  <div class="top"><span class="badge" id="no"></span><span class="timer" id="tm">60</span></div>
+  <div class="bar"><i id="pg"></i></div>
+  <div class="bar tbar"><i id="tb"></i></div>
+  <div class="q" id="q"></div>
+  <div id="opts"></div>
+  <div id="exp"></div>
+  <button class="alt full hidden" id="next">Lanjut ➜</button>
+</section>
+
+<!-- HALAMAN HASIL -->
+<section id="result" class="card hidden">
+  <h2 id="hi" style="text-align:center"></h2>
+  <p class="score" id="sc"></p>
+  <div class="stats">
+    <div style="background:var(--ok)" id="sB"></div>
+    <div style="background:var(--bad)" id="sS"></div>
+    <div style="background:var(--blue)" id="sT"></div>
+  </div>
+  <button class="alt full" id="kirim">📧 Kirim ulang hasil ke email</button>
+  <p id="status"></p>
+  <h2 style="margin-top:20px">Pembahasan</h2>
+  <div id="review"></div>
+</section>
+
+</div>
+
+<script>
+/* ================== PENGATURAN (EDIT DI SINI) ================== */
+const FORMSPREE_URL = "https://formspree.io/f/GANTI_DENGAN_ID_ANDA"; // dari formspree.io
+const WAKTU_PER_SOAL = 60; // detik
+const ACAK_SOAL = true;    // true = urutan soal diacak
+/* ================================================================ */
+
+// Format: [soal, [A,B,C,D], indeksJawabanBenar(0-3), penjelasan]
+const BANK = [
+["Hasil dari 2³ × 2⁴ adalah ...",["64","128","256","32"],1,"Pangkat dijumlahkan: 2³ × 2⁴ = 2⁷ = 128."],
+["Nilai dari ³log 81 adalah ...",["2","3","4","9"],2,"3⁴ = 81, sehingga ³log 81 = 4."],
+["Akar-akar persamaan x² − 5x + 6 = 0 adalah ...",["1 dan 6","2 dan 3","−2 dan −3","−1 dan 6"],1,"Faktorkan: (x − 2)(x − 3) = 0, jadi x = 2 atau x = 3."],
+["Jika f(x) = 2x + 3, maka f(4) = ...",["8","10","11","14"],2,"f(4) = 2(4) + 3 = 11."],
+["Gradien garis y = 3x − 7 adalah ...",["−7","3","7","−3"],1,"Pada y = mx + c, gradien m adalah koefisien x, yaitu 3."],
+["Nilai sin 30° adalah ...",["1/2","½√3","1","½√2"],0,"Nilai sudut istimewa: sin 30° = 1/2."],
+["Suku ke-10 barisan 3, 7, 11, ... adalah ...",["39","43","40","36"],0,"a = 3, b = 4. U₁₀ = a + 9b = 3 + 36 = 39."],
+["Jumlah 5 suku pertama deret 2 + 4 + 8 + ... adalah ...",["32","62","64","30"],1,"Geometri a = 2, r = 2. S₅ = 2(2⁵ − 1)/(2 − 1) = 62."],
+["Peluang muncul mata dadu genap pada satu kali lempar dadu adalah ...",["1/6","1/3","1/2","2/3"],2,"Genap: 2, 4, 6 (3 kejadian) dari 6, jadi 3/6 = 1/2."],
+["Turunan dari f(x) = x³ adalah ...",["x²","3x²","3x","x⁴/4"],1,"Aturan pangkat: d/dx xⁿ = n·xⁿ⁻¹, jadi 3x²."],
+["lim (x→2) (x² − 4)/(x − 2) = ...",["0","2","4","tak hingga"],2,"Faktorkan: (x−2)(x+2)/(x−2) = x + 2, di x = 2 hasilnya 4."],
+["Diskriminan dari x² − 4x + 4 = 0 adalah ...",["−4","0","4","8"],1,"D = b² − 4ac = 16 − 16 = 0 (akar kembar)."],
+["Jarak titik (0, 0) ke titik (3, 4) adalah ...",["5","7","12","25"],0,"√(3² + 4²) = √25 = 5."],
+["∫ 2x dx = ...",["x² + C","2x² + C","2 + C","x + C"],0,"Naikkan pangkat dan bagi: 2·x²/2 = x², ditambah konstanta C."],
+["Determinan matriks [[2, 3], [1, 4]] adalah ...",["5","11","8","−5"],0,"ad − bc = (2)(4) − (3)(1) = 8 − 3 = 5."],
+["Nilai dari 5! adalah ...",["25","60","120","720"],2,"5! = 5 × 4 × 3 × 2 × 1 = 120."],
+["Banyak cara memilih 2 orang dari 5 orang adalah ...",["5","10","20","25"],1,"C(5,2) = 5!/(2!·3!) = 10."],
+["Median dari data 3, 5, 7, 9, 11 adalah ...",["5","7","9","6"],1,"Data sudah terurut, nilai tengah (ke-3) adalah 7."],
+["Rata-rata dari 4, 6, 8, 10, 12 adalah ...",["6","7","8","9"],2,"Jumlah = 40, dibagi 5 data = 8."],
+["Luas lingkaran berjari-jari 7 cm (π = 22/7) adalah ...",["44 cm²","154 cm²","49 cm²","308 cm²"],1,"L = πr² = 22/7 × 49 = 154 cm²."],
+["Nilai tan 45° adalah ...",["0","1/2","1","√3"],2,"Pada sudut 45°, sin dan cos sama besar, sehingga tan 45° = 1."],
+["Himpunan penyelesaian 2x − 6 > 0 adalah ...",["x < 3","x > 3","x > −3","x < −3"],1,"2x > 6, maka x > 3."],
+["Bentuk sederhana dari √50 adalah ...",["25√2","5√2","10√2","2√5"],1,"√50 = √(25 × 2) = 5√2."],
+["Jika log 2 = 0,3 maka log 8 = ...",["0,6","0,9","1,2","2,4"],1,"log 8 = log 2³ = 3 × log 2 = 3 × 0,3 = 0,9."],
+["Titik puncak grafik y = x² − 4x + 3 adalah ...",["(2, −1)","(−2, 1)","(2, 1)","(4, 3)"],0,"x = −b/2a = 2. y = 4 − 8 + 3 = −1. Puncak (2, −1)."],
+["Dua sudut segitiga 50° dan 60°. Sudut ketiga adalah ...",["60°","70°","80°","90°"],1,"Jumlah sudut segitiga 180°, jadi 180° − 110° = 70°."],
+["Sisi siku-siku segitiga adalah 6 dan 8. Sisi miringnya adalah ...",["10","14","12","48"],0,"Pythagoras: √(6² + 8²) = √100 = 10."],
+["Invers dari f(x) = x + 5 adalah f⁻¹(x) = ...",["x + 5","x − 5","5x","x/5"],1,"Misal y = x + 5, maka x = y − 5. Jadi f⁻¹(x) = x − 5."],
+["Turunan dari f(x) = sin x adalah ...",["−sin x","cos x","−cos x","tan x"],1,"Turunan sin x adalah cos x."]
+];
+
+const $ = id => document.getElementById(id);
+const L = ["A","B","C","D"];
+let soal=[], idx=0, jawab=[], sisa=0, timer=null, siswa={}, terkunci=false;
+
+$("tShow").textContent = WAKTU_PER_SOAL;
+
+function acak(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function tampil(id){["intro","quiz","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo(0,0)}
+
+$("mulai").onclick = () => {
+  const nama=$("nama").value.trim(), nis=$("nis").value.trim(), kelas=$("kelas").value;
+  if(!nama||!nis||!kelas){$("err").textContent="⚠️ Lengkapi nama, NIS, dan kelas dulu ya.";return}
+  siswa={nama,nis,kelas};
+  soal = ACAK_SOAL ? acak(BANK) : BANK.slice();
+  idx=0; jawab=[];
+  tampil("quiz"); muat();
+};
+
+function muat(){
+  terkunci=false;
+  const s=soal[idx];
+  $("no").textContent=`Soal ${idx+1}/${soal.length}`;
+  $("pg").style.width=(idx/soal.length*100)+"%";
+  $("q").textContent=s[0];
+  $("exp").innerHTML="";
+  $("next").classList.add("hidden");
+  $("opts").innerHTML="";
+  s[1].forEach((t,i)=>{
+    const b=document.createElement("button");
+    b.className="opt";
+    b.innerHTML=`<b>${L[i]}</b><span></span>`;
+    b.lastChild.textContent=t;
+    b.onclick=()=>pilih(i);
+    $("opts").appendChild(b);
+  });
+  sisa=WAKTU_PER_SOAL; gambarWaktu();
+  clearInterval(timer);
+  timer=setInterval(()=>{sisa--;gambarWaktu();if(sisa<=0){clearInterval(timer);pilih(-1)}},1000);
+}
+
+function gambarWaktu(){
+  $("tm").textContent="⏱ "+sisa+" dtk";
+  $("tm").classList.toggle("low",sisa<=10);
+  $("tb").style.width=(sisa/WAKTU_PER_SOAL*100)+"%";
+}
+
+function pilih(i){
+  if(terkunci)return; terkunci=true; clearInterval(timer);
+  const s=soal[idx], benar=i===s[2];
+  jawab.push(i);
+  [...$("opts").children].forEach((b,k)=>{
+    b.disabled=true;
+    if(k===s[2])b.classList.add("right");
+    else if(k===i)b.classList.add("wrong");
+  });
+  const cls = i===-1?"to":benar?"ok":"no";
+  const judul = i===-1?"⏰ Waktu habis!":benar?"🎉 Benar!":"❌ Belum tepat.";
+  $("exp").innerHTML=`<div class="exp ${cls}"><b>${judul}</b> Jawaban benar: <b>${L[s[2]]}. </b><span id="jb"></span><br>💡 <span id="pj"></span></div>`;
+  $("jb").textContent=s[1][s[2]]; $("pj").textContent=s[3];
+  $("next").textContent = idx===soal.length-1 ? "Lihat Hasil 🏁" : "Lanjut ➜";
+  $("next").classList.remove("hidden");
+}
+
+$("next").onclick=()=>{ if(idx<soal.length-1){idx++;muat()} else selesai() };
+
+function hitung(){
+  let b=0,t=0;
+  jawab.forEach((j,i)=>{ if(j===-1)t++; else if(j===soal[i][2])b++; });
+  return {b,t,s:soal.length-b-t,nilai:Math.round(b/soal.length*100)};
+}
+
+function selesai(){
+  const r=hitung();
+  tampil("result");
+  $("hi").textContent=`Hebat, ${siswa.nama}! 🎊`;
+  $("sc").textContent=r.nilai;
+  $("sB").textContent=`✅ Benar ${r.b}`; $("sS").textContent=`❌ Salah ${r.s}`; $("sT").textContent=`⏰ Habis ${r.t}`;
+  const box=$("review"); box.innerHTML="";
+  soal.forEach((s,i)=>{
+    const j=jawab[i], ok=j===s[2];
+    const d=document.createElement("div"); d.className="rv "+(ok?"ok":"no");
+    const dipilih = j===-1?"(tidak dijawab)":`${L[j]}. ${s[1][j]}`;
+    d.innerHTML=`<b>${i+1}. </b><span class="a"></span><br>Jawaban kamu: <span class="b"></span><br>Kunci: <span class="c"></span><br>💡 <span class="d"></span>`;
+    d.querySelector(".a").textContent=s[0]; d.querySelector(".b").textContent=dipilih;
+    d.querySelector(".c").textContent=`${L[s[2]]}. ${s[1][s[2]]}`; d.querySelector(".d").textContent=s[3];
+    box.appendChild(d);
+  });
+  kirimEmail();
+}
+
+async function kirimEmail(){
+  const r=hitung(), st=$("status");
+  if(FORMSPREE_URL.includes("GANTI_DENGAN")){st.textContent="⚠️ Email belum diatur: isi FORMSPREE_URL di kode.";return}
+  st.textContent="⏳ Mengirim hasil...";
+  const detail=soal.map((s,i)=>{
+    const j=jawab[i];
+    return `${i+1}. ${s[0]} | Jawab: ${j===-1?"-":L[j]} | Kunci: ${L[s[2]]} | ${j===s[2]?"BENAR":"SALAH"}`;
+  }).join("\n");
+  try{
+    const res=await fetch(FORMSPREE_URL,{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},
+      body:JSON.stringify({_subject:`Hasil Asesmen Matematika - ${siswa.nama} (${siswa.kelas})`,
+        nama:siswa.nama,nis:siswa.nis,kelas:siswa.kelas,nilai:r.nilai,
+        benar:r.b,salah:r.s,waktu_habis:r.t,rincian:detail})});
+    st.textContent=res.ok?"✅ Hasil berhasil dikirim ke email guru.":"❌ Gagal mengirim. Tekan tombol kirim ulang.";
+  }catch(e){st.textContent="❌ Tidak ada koneksi. Tekan tombol kirim ulang."}
+}
+$("kirim").onclick=kirimEmail;
+</script>
+</body>
+</html>
